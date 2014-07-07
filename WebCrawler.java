@@ -7,8 +7,9 @@ public class WebCrawler {
         // TODO code application logic here
         int prof = 1;
         String url = "http://windowsphonebrasil.com.br/";
-        urlCrawle wc = new urlCrawle();
-        wc.urlCrawle(url, prof);
+        Crawle wc = new Crawle(url, prof);
+        Thread tcrawler = new Thread(wc);
+        tcrawler.start();
 
     }
 
