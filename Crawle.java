@@ -1,9 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package webcrawler;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,12 +12,18 @@ import java.net.URL;
  *
  * @author Erick
  */
-public class Crawle {
+public class Crawle implements Runnable{
+    String url;
+    int prof;
+    public Crawle(String url, int prof) {
+        this.url=url;
+        this.prof=prof;
+    }
 
-    public void urlCrawle(String url, int prof) {
+    
 
-        //this.insertCrawledUrl(url);
-
+    @Override
+    public void run() {
         StringBuffer objBuffer = new StringBuffer("");
 
         try {
@@ -40,14 +40,14 @@ public class Crawle {
 
             }
 
-            String outQuery = "GET "+path+" HTTP/1.1\n";
+            String outQuery = "GET " + path + " HTTP/1.1\n";
 
             InetAddress r = InetAddress.getByName(host);
             Socket s = new Socket(r, 80);
             OutputStream os = s.getOutputStream();
             PrintWriter writer = new PrintWriter(os, true);
             String a = r.getHostName();
-            writer.println("GET / HTTP/1.0");
+            writer.println("GET "+path+" HTTP/1.0");
             writer.println("Host: " + a);
             writer.println("Connection: close");
             writer.println();
@@ -60,8 +60,25 @@ public class Crawle {
                 if (line == null) {
                     break; // Terminou de ler o documento 
                 }
-                
-                System.out.println(line);
+                if (prof != 0) {
+                    if (line.contains("<a")) {
+                        line = line.substring(line.indexOf("<a"));
+                        if (line.contains("http://")) {
+                            line = line.substring(line.indexOf("http://"));
+                            
+                                String link = line.substring(0, line.indexOf("\""));
+                                System.out.println(link);
+                                if (prof > 0) {
+                                    Crawle urlCrawle = new Crawle(link, prof - 1);
+                                    Thread tnew = new Thread(urlCrawle);
+                                    tnew.start();
+                                }
+                            
+
+                        }
+                    }
+                }
+                //System.out.println(line);
             }
 
             s.close();
@@ -73,9 +90,6 @@ public class Crawle {
 
 
         //System.out.println(objBuffer.toString());
-
-
     }
 
-    
 }
