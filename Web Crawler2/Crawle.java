@@ -1,10 +1,9 @@
-
+package webcrawler;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -14,7 +13,7 @@ import java.net.URL;
  *
  * @author Erick
  */
-public class Crawle implements Runnable{
+public class Crawle implements Runnable{    //implementa Runnable para usar as threads
     String url;
     int prof;
     public Crawle(String url, int prof) {
@@ -42,12 +41,11 @@ public class Crawle implements Runnable{
 
             }
 
-            String outQuery = "GET " + path + " HTTP/1.1\n";
 
             InetAddress r = InetAddress.getByName(host);
-            Socket s = new Socket(r, 80);
-            OutputStream os = s.getOutputStream();
-            PrintWriter writer = new PrintWriter(os, true);
+            Socket s = new Socket(r, 80);           //cria o socket
+            OutputStream os = s.getOutputStream();  
+            PrintWriter writer = new PrintWriter(os, true); //cria writer para comunicação com o servidor
             String a = r.getHostName();
             writer.println("GET "+path+" HTTP/1.0");
             writer.println("Host: " + a);
@@ -56,24 +54,24 @@ public class Crawle implements Runnable{
 
             InputStream is = s.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader instream = new BufferedReader(isr);
+            BufferedReader instream = new BufferedReader(isr);  //Resposta do servidor
             while (true) {
-                String line = instream.readLine();
+                String line = instream.readLine(); //pega uma linha do html uma linha
                 if (line == null) {
                     break; // Terminou de ler o documento 
                 }
                 if (prof != 0) {
-                    if (line.contains("<a")) {
-                        line = line.substring(line.indexOf("<a"));
-                        if (line.contains("http://")) {
-                            line = line.substring(line.indexOf("http://"));
+                    if (line.contains("<a")) {      //Se contém <a na linha
+                        line = line.substring(line.indexOf("<a"));      //cria uma substring a partir de <a
+                        if (line.contains("http://")) {         //continua se contém http://
+                            line = line.substring(line.indexOf("http://"));     //cria uma substring a partir de http://
                             
-                                String link = line.substring(0, line.indexOf("\""));
-                                System.out.println(link);
+                                String link = line.substring(0, line.indexOf("\""));    //pega o link da linha
+                                System.out.println(link);                               //imprime o link
                                 if (prof > 0) {
-                                    Crawle urlCrawle = new Crawle(link, prof - 1);
+                                    Crawle urlCrawle = new Crawle(link, prof - 1);  //cria um novo crawle
                                     Thread tnew = new Thread(urlCrawle);
-                                    tnew.start();
+                                    tnew.start();                       //inicia a thread
                                 }
                             
 
@@ -83,7 +81,7 @@ public class Crawle implements Runnable{
                 //System.out.println(line);
             }
 
-            s.close();
+            s.close();              //fecha o socket
 
 
 
