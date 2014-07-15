@@ -1,4 +1,15 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
+
+
+
+/**
+ *
+ * @author Erick
+ */
 public class WebCrawler {
 
     /**
@@ -8,10 +19,16 @@ public class WebCrawler {
         // TODO code application logic here
         int prof = Integer.parseInt(args[1]);
         String url=args[0];
-        //String url = "https://www.google.com.br/";
-        Crawle wc = new Crawle(url, prof);
-        Thread tcrawler = new Thread(wc);
-        tcrawler.start();
+        if(url.contains("http://")){
+            Crawle wc = new Crawle(url, prof);
+            Thread tcrawler = new Thread(wc);
+            tcrawler.start();
+        }else if(url.contains("https://")){
+            Crawlehttps wc = new Crawlehttps(url, prof);
+            Thread tcrawler = new Thread(wc);
+            tcrawler.start();
+        }
+        
 
     }
 

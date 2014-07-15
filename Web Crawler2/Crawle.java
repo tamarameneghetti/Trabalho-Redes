@@ -1,7 +1,6 @@
 
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -10,22 +9,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import javax.jws.WebParam.Mode;
-import javax.net.ssl.HandshakeCompletedListener;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.HandshakeCompletedEvent;
-import java.security.cert.CertificateFactory;
-import javax.net.ssl.SSLSession;
-
 
 /**
  *
@@ -62,10 +45,7 @@ public class Crawle implements Runnable{
             String outQuery = "GET " + path + " HTTP/1.1\n";
 
             InetAddress r = InetAddress.getByName(host);
-            SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            SSLSocket s =  (SSLSocket) factory.createSocket(r, 80);
-            HandshakeCompletedEvent go = new HandshakeCompletedEvent(s,s.getHandshakeSession());
-            go.getPeerCertificateChain();
+            Socket s = new Socket(r, 80);
             OutputStream os = s.getOutputStream();
             PrintWriter writer = new PrintWriter(os, true);
             String a = r.getHostName();
@@ -77,7 +57,6 @@ public class Crawle implements Runnable{
             InputStream is = s.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader instream = new BufferedReader(isr);
-
             while (true) {
                 String line = instream.readLine();
                 if (line == null) {
@@ -98,15 +77,6 @@ public class Crawle implements Runnable{
                                 }
                             
 
-                        }else if(line.contains("https://")){
-                            line = line.substring(line.indexOf("https://"));                            
-                                String link = line.substring(0, line.indexOf("\""));
-                                System.out.println(link);
-                                if (prof > 0) {
-                                    Crawle urlCrawle = new Crawle(link, prof - 1);
-                                    Thread tnew = new Thread(urlCrawle);
-                                    tnew.start();
-                                }
                         }
                     }
                 }

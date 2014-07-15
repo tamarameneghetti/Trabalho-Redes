@@ -44,7 +44,6 @@ FILE= testeme
 
 CLASSES = \
 	Crawle.java \
-	Crawlehttps.java \
 	WebCrawler.java
 
 #
@@ -76,7 +75,7 @@ classes: $(CLASSES:.java=.class)
 # $(JMV) y $(MAIN) are replaced by their values
 
 run: WebCrawler.class
-	$(JVM) $(MAIN) "https://sites.google.com/a/inf.ufpel.edu.br/pilla/" 1
+	$(JVM) $(MAIN) "http://windowsphonebrasil.com.br/" 1
 
 # this line is to remove all unneeded files from
 # the directory when we are finished executing(saves space)
